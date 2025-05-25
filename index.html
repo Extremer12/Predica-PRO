@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predica PRO</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E✝️%3C/text%3E%3C/svg%3E">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3f51b5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Predicaciones">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E✝️%3C/text%3E%3C/svg%3E">
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Incluimos la librería jsPDF para generar PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Predica PRO</h1>
+        <p>Crea, personaliza y descarga tu predicación en formato PDF</p>
+        <!-- Botón de instalación PWA -->
+        <button id="install-btn" class="install-button" style="display: none;">📱 Instalar App</button>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="editor-container">
+                <div class="editor-controls">
+                    <h2>Editor de Predicación</h2>
+                    
+                    <!-- Controles de estilo expandidos -->
+                    <div class="style-controls">
+                        <div class="control-group">
+                            <label for="font-family">Fuente:</label>
+                            <select id="font-family">
+                                <option value="Arial, sans-serif">Arial</option>
+                                <option value="Times New Roman, serif">Times New Roman</option>
+                                <option value="Calibri, sans-serif">Calibri</option>
+                                <option value="Georgia, serif">Georgia</option>
+                                <option value="Verdana, sans-serif">Verdana</option>
+                                <option value="Trebuchet MS, sans-serif">Trebuchet MS</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="font-size">Tamaño de fuente:</label>
+                            <select id="font-size">
+                                <option value="12px">Pequeño (12px)</option>
+                                <option value="14px">Normal (14px)</option>
+                                <option value="16px" selected>Mediano (16px)</option>
+                                <option value="18px">Grande (18px)</option>
+                                <option value="20px">Muy Grande (20px)</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="theme">Tema:</label>
+                            <select id="theme">
+                                <option value="light">Claro</option>
+                                <option value="dark">Oscuro</option>
+                                <option value="sepia">Sepia</option>
+                                <option value="blue">Azul</option>
+                                <option value="green">Verde</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="text-color">Color del texto:</label>
+                            <input type="color" id="text-color" value="#333333">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="background-color">Color de fondo:</label>
+                            <input type="color" id="background-color" value="#ffffff">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="line-height">Espaciado de líneas:</label>
+                            <select id="line-height">
+                                <option value="1.2">Compacto (1.2)</option>
+                                <option value="1.4">Normal (1.4)</option>
+                                <option value="1.6" selected>Cómodo (1.6)</option>
+                                <option value="1.8">Amplio (1.8)</option>
+                                <option value="2.0">Muy Amplio (2.0)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <form id="sermon-form">
+                        <div class="form-group">
+                            <label for="sermon-theme">Tema:</label>
+                            <input type="text" id="sermon-theme" placeholder="Ej: El amor de Dios" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sermon-text">Texto Bíblico:</label>
+                            <input type="text" id="sermon-text" placeholder="Ej: Juan 3:16" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sermon-title">Título:</label>
+                            <input type="text" id="sermon-title" placeholder="Ej: El amor incondicional de Dios" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sermon-purpose">Propósito:</label>
+                            <textarea id="sermon-purpose" placeholder="Ej: Mostrar el amor incondicional de Dios hacia la humanidad" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sermon-intro">Introducción:</label>
+                            <textarea id="sermon-intro" placeholder="Escribe la introducción de tu predicación..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sermon-body">Cuerpo de la Predicación:</label>
+                            <textarea id="sermon-body" placeholder="Desarrolla los puntos principales de tu predicación..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sermon-conclusion">Conclusión:</label>
+                            <textarea id="sermon-conclusion" placeholder="Escribe la conclusión de tu predicación..." required></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="preview-btn">Vista Previa</button>
+                            <button type="button" id="generate-pdf-btn">Generar PDF</button>
+                            <button type="button" id="reset-styles-btn">Restablecer Estilos</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="preview-container" id="preview-container">
+                <h2>Vista Previa</h2>
+                <div class="sermon-preview" id="sermon-preview">
+                    <div class="sermon-header">
+                        <h1 id="preview-title">Título de la Predicación</h1>
+                        <p id="preview-theme">Tema: </p>
+                        <p id="preview-text">Texto Bíblico: </p>
+                    </div>
+                    <div class="sermon-content">
+                        <div class="sermon-section">
+                            <h3>Propósito</h3>
+                            <p id="preview-purpose"></p>
+                        </div>
+                        <div class="sermon-section">
+                            <h3>Introducción</h3>
+                            <p id="preview-intro"></p>
+                        </div>
+                        <div class="sermon-section">
+                            <h3>Desarrollo</h3>
+                            <p id="preview-body"></p>
+                        </div>
+                        <div class="sermon-section">
+                            <h3>Conclusión</h3>
+                            <p id="preview-conclusion"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Creador de Predicaciones Cristianas</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="pdf-generator.js"></script>
+    <script src="pwa.js"></script>
+</body>
+</html>
