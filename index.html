@@ -33,8 +33,41 @@
                 <div class="editor-controls">
                     <h2>Editor de Predicación</h2>
                     
+                    <!-- Panel de herramientas -->
+                    <div class="toolbar">
+                        <div class="toolbar-section">
+                            <h3>📄 Plantillas</h3>
+                            <div class="control-group">
+                                <label for="template-select">Seleccionar plantilla:</label>
+                                <select id="template-select">
+                                    <option value="">-- Seleccionar plantilla --</option>
+                                    <option value="evangelistic">Evangelística</option>
+                                    <option value="teaching">Enseñanza</option>
+                                    <option value="devotional">Devocional</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="toolbar-section">
+                            <h3>💾 Guardado</h3>
+                            <div class="save-controls">
+                                <button type="button" id="save-btn" class="save-button">💾 Guardar</button>
+                                <button type="button" id="load-btn" class="load-button">📂 Cargar</button>
+                                <span id="save-status" class="save-status">✅ Guardado</span>
+                            </div>
+                        </div>
+
+                        <div class="toolbar-section">
+                            <h3>📊 Estadísticas</h3>
+                            <div class="word-count-summary">
+                                <span id="total-words">Palabras totales: 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Controles de estilo expandidos -->
                     <div class="style-controls">
+                        <h3>🎨 Personalización</h3>
                         <div class="control-group">
                             <label for="font-family">Fuente:</label>
                             <select id="font-family">
@@ -95,42 +128,49 @@
                         <div class="form-group">
                             <label for="sermon-theme">Tema:</label>
                             <input type="text" id="sermon-theme" placeholder="Ej: El amor de Dios" required>
+                            <span class="word-count" id="theme-count">0 palabras</span>
                         </div>
 
                         <div class="form-group">
                             <label for="sermon-text">Texto Bíblico:</label>
                             <input type="text" id="sermon-text" placeholder="Ej: Juan 3:16" required>
+                            <span class="word-count" id="text-count">0 palabras</span>
                         </div>
 
                         <div class="form-group">
                             <label for="sermon-title">Título:</label>
                             <input type="text" id="sermon-title" placeholder="Ej: El amor incondicional de Dios" required>
+                            <span class="word-count" id="title-count">0 palabras</span>
                         </div>
 
                         <div class="form-group">
                             <label for="sermon-purpose">Propósito:</label>
                             <textarea id="sermon-purpose" placeholder="Ej: Mostrar el amor incondicional de Dios hacia la humanidad" required></textarea>
+                            <span class="word-count" id="purpose-count">0 palabras</span>
                         </div>
 
                         <div class="form-group">
                             <label for="sermon-intro">Introducción:</label>
                             <textarea id="sermon-intro" placeholder="Escribe la introducción de tu predicación..." required></textarea>
+                            <span class="word-count" id="intro-count">0 palabras</span>
                         </div>
 
                         <div class="form-group">
                             <label for="sermon-body">Cuerpo de la Predicación:</label>
                             <textarea id="sermon-body" placeholder="Desarrolla los puntos principales de tu predicación..." required></textarea>
+                            <span class="word-count" id="body-count">0 palabras</span>
                         </div>
 
                         <div class="form-group">
                             <label for="sermon-conclusion">Conclusión:</label>
                             <textarea id="sermon-conclusion" placeholder="Escribe la conclusión de tu predicación..." required></textarea>
+                            <span class="word-count" id="conclusion-count">0 palabras</span>
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" id="preview-btn">Vista Previa</button>
-                            <button type="button" id="generate-pdf-btn">Generar PDF</button>
-                            <button type="button" id="reset-styles-btn">Restablecer Estilos</button>
+                            <button type="button" id="preview-btn">👁️ Vista Previa</button>
+                            <button type="button" id="generate-pdf-btn">📄 Generar PDF</button>
+                            <button type="button" id="reset-styles-btn">🔄 Restablecer Estilos</button>
                         </div>
                     </form>
                 </div>
@@ -168,7 +208,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2023 Creador de Predicaciones Cristianas</p>
+        <p>&copy; 2023 Predica PRO - Creador de Predicaciones Cristianas</p>
     </footer>
 
     <script src="script.js"></script>
