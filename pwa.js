@@ -2,13 +2,16 @@
 let deferredPrompt;
 const installBtn = document.getElementById('install-btn');
 
+// Mostrar el botón de instalación por defecto
+installBtn.style.display = 'block';
+
 // Escuchar el evento beforeinstallprompt
 window.addEventListener('beforeinstallprompt', (e) => {
     // Prevenir que Chrome 67 y anteriores muestren automáticamente el prompt
     e.preventDefault();
     // Guardar el evento para que pueda ser activado más tarde
     deferredPrompt = e;
-    // Mostrar el botón de instalación
+    // Mostrar el botón de instalación (ya está visible por defecto)
     installBtn.style.display = 'block';
 });
 
@@ -28,15 +31,15 @@ installBtn.addEventListener('click', async () => {
         
         // Limpiar el prompt guardado
         deferredPrompt = null;
-        // Ocultar el botón
-        installBtn.style.display = 'none';
+    } else {
+        // Si no hay prompt disponible, mostrar un mensaje al usuario
+        alert('Esta aplicación ya está instalada o tu navegador no permite instalar aplicaciones web.');
     }
 });
 
 // Escuchar cuando la app es instalada
 window.addEventListener('appinstalled', (evt) => {
     console.log('App instalada exitosamente');
-    installBtn.style.display = 'none';
 });
 
 // Registrar Service Worker (opcional para funcionalidad offline)
@@ -55,12 +58,68 @@ if ('serviceWorker' in navigator) {
 // Detectar si la app está siendo ejecutada como PWA
 function isPWA() {
     return window.matchMedia('(display-mode: standalone)').matches || 
-           window.navigator.standalone === true;
+    window.navigator.standalone === true;
 }
 
 // Ajustar estilos si es PWA
 if (isPWA()) {
     document.body.classList.add('pwa-mode');
-    // Ocultar el botón de instalación si ya está instalada
-    installBtn.style.display = 'none';
 }
+
+
+// Funcionalidades PWA mejoradas
+function initializePWAFeatures() {
+    // Detectar si está instalada como PWA
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        document.body.classList.add('pwa-installed');
+        showEnhancedNotification('📱 Aplicación ejecutándose como PWA', 'success');
+    }
+    
+    // Detectar cambios de conectividad
+    window.addEventListener('online', () => {
+        showEnhancedNotification('🌐 Conexión restaurada', 'success');
+    });
+    
+    window.addEventListener('offline', () => {
+        showEnhancedNotification('📴 Sin conexión - Modo offline activado', 'warning');
+    });
+    
+    // Manejar actualizaciones de la aplicación
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            showEnhancedNotification('🔄 Aplicación actualizada - Recarga para ver cambios', 'info');
+        });
+    }
+}
+
+// Función para compartir sermón
+function shareSermon() {
+    const title = document.getElementById('sermon-title').value || 'Mi Sermón';
+    const theme = document.getElementById('sermon-theme').value || '';
+    
+    if (navigator.share) {
+        navigator.share({
+            title: `${title} - Predica PRO`,
+            text: `${theme ? 'Tema: ' + theme : 'Sermón creado con Predica PRO'}`,
+            url: window.location.href
+        }).then(() => {
+            showEnhancedNotification('📤 Sermón compartido', 'success');
+        }).catch(() => {
+            fallbackShare();
+        });
+    } else {
+        fallbackShare();
+    }
+}
+
+function fallbackShare() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        showEnhancedNotification('📋 Enlace copiado al portapapeles', 'success');
+    }).catch(() => {
+        showEnhancedNotification('❌ No se pudo compartir', 'error');
+    });
+}
+
+// Inicializar al cargar
+document.addEventListener('DOMContentLoaded', initializePWAFeatures);

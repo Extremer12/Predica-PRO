@@ -15,16 +15,91 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E✝️%3C/text%3E%3C/svg%3E">
     <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
-    <!-- Incluimos la librería jsPDF para generar PDFs -->
+    <!-- Incluimos las librerías necesarias -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+    <!-- Overlay para tutorial -->
+    <div id="tutorial-overlay" class="tutorial-overlay" style="display: none;">
+        <div class="tutorial-content">
+            <div class="tutorial-header">
+                <h3 id="tutorial-title">🎓 Tutorial - Paso 1</h3>
+                <button id="tutorial-close" class="close-button">✖️</button>
+            </div>
+            <div class="tutorial-body">
+                <p id="tutorial-text">Bienvenido a Predica PRO. Este tutorial te guiará paso a paso.</p>
+                <div class="tutorial-highlight"></div>
+            </div>
+            <div class="tutorial-footer">
+                <button id="tutorial-prev" class="tutorial-button">⬅️ Anterior</button>
+                <span id="tutorial-progress">1 / 6</span>
+                <button id="tutorial-next" class="tutorial-button">Siguiente ➡️</button>
+                <button id="tutorial-skip" class="tutorial-button secondary">Saltar Tutorial</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zona de drag and drop -->
+    <div id="drop-zone" class="drop-zone" style="display: none;">
+        <div class="drop-zone-content">
+            <div class="drop-icon">📁</div>
+            <p>Suelta aquí tu archivo para importarlo</p>
+            <small>Archivos soportados: .json, .txt, .docx</small>
+        </div>
+    </div>
+
+    <!-- Sistema de notificaciones mejorado -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Indicador de atajos de teclado -->
+    <div id="keyboard-shortcuts-help" class="keyboard-help" style="display: none;">
+        <div class="keyboard-help-content">
+            <h3>⌨️ Atajos de Teclado</h3>
+            <div class="shortcuts-list">
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>S</kbd>
+                    <span>Guardar sermón</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>O</kbd>
+                    <span>Abrir sermón</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>P</kbd>
+                    <span>Generar PDF</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>N</kbd>
+                    <span>Nuevo sermón</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>D</kbd>
+                    <span>Alternar modo oscuro</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>F1</kbd>
+                    <span>Mostrar tutorial</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Esc</kbd>
+                    <span>Cerrar modales</span>
+                </div>
+            </div>
+            <button id="close-shortcuts-help" class="close-button">✖️</button>
+        </div>
+    </div>
+
     <header>
         <h1>Predica PRO</h1>
         <p>Crea, personaliza y descarga tu predicación en formato PDF</p>
-        <!-- Botón de instalación PWA -->
-        <button id="install-btn" class="install-button" style="display: none;">📱 Instalar App</button>
+        <!-- Controles del header -->
+        <div class="header-controls">
+            <button id="dark-mode-toggle" class="header-button" title="Alternar modo oscuro (Ctrl+D)">🌙</button>
+            <button id="tutorial-start" class="header-button" title="Iniciar tutorial (F1)">🎓</button>
+            <button id="shortcuts-help" class="header-button" title="Atajos de teclado (?)">⌨️</button>
+            <button id="install-btn" class="install-button" style="display: block;">📱 Instalar App</button>
+        </div>
     </header>
 
     <main>
@@ -33,8 +108,21 @@
                 <div class="editor-controls">
                     <h2>Editor de Predicación</h2>
                     
-                    <!-- Panel de herramientas -->
+                    <!-- Panel de herramientas expandido -->
                     <div class="toolbar">
+                        <!-- Gestión de Sermones -->
+                        <div class="toolbar-section">
+                            <h3>📚 Gestión de Sermones</h3>
+                            <div class="sermon-management">
+                                <button type="button" id="new-sermon-btn" class="action-button" title="Nuevo sermón (Ctrl+N)">📄 Nuevo Sermón</button>
+                                <select title="seleccion de sermon" id="sermon-list">
+                                    <option value="">-- Seleccionar sermón --</option>
+                                </select>
+                                <button type="button" id="delete-sermon-btn" class="action-button delete-btn">🗑️ Eliminar</button>
+                            </div>
+                        </div>
+
+                        <!-- Plantillas -->
                         <div class="toolbar-section">
                             <h3>📄 Plantillas</h3>
                             <div class="control-group">
@@ -48,15 +136,48 @@
                             </div>
                         </div>
 
+                        <!-- Guardado y Exportación -->
                         <div class="toolbar-section">
-                            <h3>💾 Guardado</h3>
+                            <h3>💾 Guardado y Exportación</h3>
                             <div class="save-controls">
-                                <button type="button" id="save-btn" class="save-button">💾 Guardar</button>
-                                <button type="button" id="load-btn" class="load-button">📂 Cargar</button>
+                                <button type="button" id="save-btn" class="save-button" title="Guardar (Ctrl+S)">💾 Guardar</button>
+                                <button type="button" id="load-btn" class="load-button" title="Cargar (Ctrl+O)">📂 Cargar</button>
+                                <button type="button" id="import-btn" class="import-button">📥 Importar</button>
                                 <span id="save-status" class="save-status">✅ Guardado</span>
+                            </div>
+                            <div class="export-controls">
+                                <button type="button" id="export-txt-btn" class="export-button">📝 Exportar TXT</button>
+                                <button type="button" id="export-html-btn" class="export-button">🌐 Exportar HTML</button>
+                                <button type="button" id="export-docx-btn" class="export-button">📄 Exportar DOCX</button>
                             </div>
                         </div>
 
+                        <!-- Búsqueda Bíblica -->
+                        <div class="toolbar-section">
+                            <h3>📖 Búsqueda Bíblica</h3>
+                            <div class="bible-search">
+                                <input type="text" id="bible-search-input" placeholder="Buscar versículo (ej: Juan 3:16)">
+                                <button type="button" id="bible-search-btn" class="search-button">🔍 Buscar</button>
+                            </div>
+                        </div>
+
+                        <!-- Temporizador -->
+                        <div class="toolbar-section">
+                            <h3>⏱️ Temporizador de Sermón</h3>
+                            <div class="timer-controls">
+                                <div class="timer-display" id="timer-display">00:00</div>
+                                <div class="timer-buttons">
+                                    <button type="button" id="timer-toggle" class="timer-button">▶️ Iniciar</button>
+                                    <button type="button" id="timer-reset" class="timer-button">🔄 Reiniciar</button>
+                                </div>
+                                <div class="timer-settings">
+                                    <label for="target-time">Tiempo objetivo (minutos):</label>
+                                    <input type="number" id="target-time" min="1" max="120" value="30">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estadísticas -->
                         <div class="toolbar-section">
                             <h3>📊 Estadísticas</h3>
                             <div class="word-count-summary">
@@ -65,7 +186,7 @@
                         </div>
                     </div>
                     
-                    <!-- Controles de estilo expandidos -->
+                    <!-- Controles de estilo -->
                     <div class="style-controls">
                         <h3>🎨 Personalización</h3>
                         <div class="control-group">
@@ -169,7 +290,7 @@
 
                         <div class="form-actions">
                             <button type="button" id="preview-btn">👁️ Vista Previa</button>
-                            <button type="button" id="generate-pdf-btn">📄 Generar PDF</button>
+                            <button type="button" id="generate-pdf-btn" title="Generar PDF (Ctrl+P)">📄 Generar PDF</button>
                             <button type="button" id="reset-styles-btn">🔄 Restablecer Estilos</button>
                         </div>
                     </form>
@@ -206,6 +327,19 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal para búsqueda bíblica -->
+    <div id="bible-search-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📖 Resultados de Búsqueda Bíblica</h3>
+                <button type="button" id="close-bible-modal" class="close-button">✖️</button>
+            </div>
+            <div class="modal-body">
+                <div id="bible-search-results"></div>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2023 Predica PRO - Creador de Predicaciones Cristianas</p>
