@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Predica PRO</title>
+    
+    <!-- Archivos CSS reorganizados -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="modals.css">
+    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E✝️%3C/text%3E%3C/svg%3E">
     <!-- PWA Meta Tags -->
@@ -91,14 +96,20 @@
     </div>
 
     <header>
+        <!-- Elementos decorativos -->
+        <div class="header-decoration decoration-1"></div>
+        <div class="header-decoration decoration-2"></div>
+        <div class="header-decoration decoration-3"></div>
+        
         <h1>Predica PRO</h1>
-        <p>Crea, personaliza y descarga tu predicación en formato PDF</p>
+        <p>Crea, personaliza y descarga tu predicación en formato PDF con tecnología avanzada</p>
+        
         <!-- Controles del header -->
         <div class="header-controls">
             <button id="dark-mode-toggle" class="header-button" title="Alternar modo oscuro (Ctrl+D)">🌙</button>
             <button id="tutorial-start" class="header-button" title="Iniciar tutorial (F1)">🎓</button>
             <button id="shortcuts-help" class="header-button" title="Atajos de teclado (?)">⌨️</button>
-            <button id="install-btn" class="install-button" style="display: block;">📱 Instalar App</button>
+            <button id="install-btn" class="install-button">📱 Instalar App</button>
         </div>
     </header>
 
@@ -110,187 +121,369 @@
                     
                     <!-- Panel de herramientas expandido -->
                     <div class="toolbar">
-                        <!-- Gestión de Sermones -->
-                        <div class="toolbar-section">
+                        <!-- Gestión de Sermones - Siempre visible -->
+                        <div class="sermon-management-section">
                             <h3>📚 Gestión de Sermones</h3>
                             <div class="sermon-management">
                                 <button type="button" id="new-sermon-btn" class="action-button" title="Nuevo sermón (Ctrl+N)">📄 Nuevo Sermón</button>
-                                <select title="seleccion de sermon" id="sermon-list">
+                                <!-- Corregir el error de "selectselect" -->
+                                <select id="sermon-list" class="sermon-select" title="Lista de sermones guardados">
                                     <option value="">-- Seleccionar sermón --</option>
                                 </select>
                                 <button type="button" id="delete-sermon-btn" class="action-button delete-btn">🗑️ Eliminar</button>
                             </div>
                         </div>
 
-                        <!-- Plantillas -->
-                        <div class="toolbar-section">
-                            <h3>📄 Plantillas</h3>
-                            <div class="control-group">
-                                <label for="template-select">Seleccionar plantilla:</label>
-                                <select id="template-select">
-                                    <option value="">-- Seleccionar plantilla --</option>
-                                    <option value="evangelistic">Evangelística</option>
-                                    <option value="teaching">Enseñanza</option>
-                                    <option value="devotional">Devocional</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Guardado y Exportación -->
-                        <div class="toolbar-section">
-                            <h3>💾 Guardado y Exportación</h3>
-                            <div class="save-controls">
-                                <button type="button" id="save-btn" class="save-button" title="Guardar (Ctrl+S)">💾 Guardar</button>
-                                <button type="button" id="load-btn" class="load-button" title="Cargar (Ctrl+O)">📂 Cargar</button>
-                                <button type="button" id="import-btn" class="import-button">📥 Importar</button>
-                                <span id="save-status" class="save-status">✅ Guardado</span>
-                            </div>
-                            <div class="export-controls">
-                                <button type="button" id="export-txt-btn" class="export-button">📝 Exportar TXT</button>
-                                <button type="button" id="export-html-btn" class="export-button">🌐 Exportar HTML</button>
-                                <button type="button" id="export-docx-btn" class="export-button">📄 Exportar DOCX</button>
-                            </div>
-                        </div>
-
-                        <!-- Búsqueda Bíblica -->
-                        <div class="toolbar-section">
-                            <h3>📖 Búsqueda Bíblica</h3>
-                            <div class="bible-search">
-                                <input type="text" id="bible-search-input" placeholder="Buscar versículo (ej: Juan 3:16)">
-                                <button type="button" id="bible-search-btn" class="search-button">🔍 Buscar</button>
-                            </div>
-                        </div>
-
-                        <!-- Temporizador -->
-                        <div class="toolbar-section">
-                            <h3>⏱️ Temporizador de Sermón</h3>
-                            <div class="timer-controls">
-                                <div class="timer-display" id="timer-display">00:00</div>
-                                <div class="timer-buttons">
-                                    <button type="button" id="timer-toggle" class="timer-button">▶️ Iniciar</button>
-                                    <button type="button" id="timer-reset" class="timer-button">🔄 Reiniciar</button>
+                        <!-- Plantillas - Colapsable -->
+                        <div class="collapsible-section templates-section">
+                            <button class="section-header" type="button" data-target="templates-content">
+                                <div class="section-title">
+                                    <span class="section-icon">📄</span>
+                                    <span>Plantillas</span>
                                 </div>
-                                <div class="timer-settings">
-                                    <label for="target-time">Tiempo objetivo (minutos):</label>
-                                    <input type="number" id="target-time" min="1" max="120" value="30">
+                                <span class="section-toggle">▶</span>
+                            </button>
+                            <!-- Plantillas - Contenido -->
+                            <div class="section-content" id="templates-content">
+                                <div class="section-content-inner">
+                                    <div class="template-selector">
+                                        <select id="template-select" title="Seleccionar plantilla de predicación">
+                                            <option value="">-- Seleccionar plantilla --</option>
+                                            <option value="evangelistic">Evangelística</option>
+                                            <option value="teaching">Enseñanza</option>
+                                            <option value="devotional">Devocional</option>
+                                        </select>
+                                        <button type="button" id="apply-template-btn" class="template-apply-btn">✨ Aplicar</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Estadísticas -->
-                        <div class="toolbar-section">
-                            <h3>📊 Estadísticas</h3>
-                            <div class="word-count-summary">
-                                <span id="total-words">Palabras totales: 0</span>
+                        <!-- Guardado y Exportación - Colapsable -->
+                        <div class="collapsible-section save-export-section">
+                            <button class="section-header" type="button" data-target="save-export-content">
+                                <div class="section-title">
+                                    <span class="section-icon">💾</span>
+                                    <span>Guardado y Exportación</span>
+                                </div>
+                                <span class="section-toggle">▶</span>
+                            </button>
+                            <!-- Guardado y Exportación - Contenido -->
+                            <div class="section-content" id="save-export-content">
+                                <div class="section-content-inner">
+                                    <div class="save-controls">
+                                        <button type="button" id="save-btn" class="save-button" title="Guardar (Ctrl+S)">
+                                            💾 Guardar
+                                        </button>
+                                        <button type="button" id="load-btn" class="load-button" title="Cargar (Ctrl+O)">
+                                            📂 Cargar
+                                        </button>
+                                        <button type="button" id="import-btn" class="import-button">
+                                            📥 Importar
+                                        </button>
+                                        <span id="save-status" class="save-status">✅ Guardado</span>
+                                    </div>
+                                    <div class="export-controls">
+                                        <button type="button" id="export-txt-btn" class="export-button">
+                                            📝 Exportar TXT
+                                        </button>
+                                        <button type="button" id="export-html-btn" class="export-button">
+                                            🌐 Exportar HTML
+                                        </button>
+                                        <button type="button" id="export-docx-btn" class="export-button">
+                                            📄 Exportar DOCX
+                                        </button>
+                                        <button type="button" id="generate-pdf-btn" class="export-button" title="Generar PDF (Ctrl+P)">
+                                            📄 Generar PDF
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Búsqueda Bíblica - Colapsable (SEPARADA) -->
+                        <div class="collapsible-section bible-search-section">
+                            <button class="section-header" type="button" data-target="bible-search-content">
+                                <div class="section-title">
+                                    <span class="section-icon">📖</span>
+                                    <span>Búsqueda Bíblica</span>
+                                </div>
+                                <span class="section-toggle">▶</span>
+                            </button>
+                            <!-- Búsqueda Bíblica - Contenido -->
+                            <div class="section-content" id="bible-search-content">
+                                <div class="section-content-inner">
+                                    <div class="bible-search-container">
+                                        <input type="text" id="bible-search-input" class="bible-search-input" placeholder="Buscar versículo (ej: Juan 3:16)">
+                                        <button type="button" id="bible-search-btn" class="bible-search-btn">
+                                            🔍 Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Temporizador - Colapsable -->
+                        <div class="collapsible-section timer-section">
+                            <button class="section-header" type="button" data-target="timer-content">
+                                <div class="section-title">
+                                    <span class="section-icon">⏱️</span>
+                                    <span>Temporizador</span>
+                                </div>
+                                <span class="section-toggle">▶</span>
+                            </button>
+                            <!-- Temporizador - Contenido -->
+                            <div class="section-content" id="timer-content">
+                                <div class="section-content-inner">
+                                    <div class="timer-display" id="timer-display">00:00</div>
+                                    <div class="timer-controls">
+                                        <div class="timer-buttons">
+                                            <button type="button" id="timer-toggle" class="timer-button">▶️ Iniciar</button>
+                                            <button type="button" id="timer-reset" class="timer-button">🔄 Reiniciar</button>
+                                        </div>
+                                        <div class="timer-settings">
+                                            <label for="target-time">Tiempo objetivo (minutos):</label>
+                                            <input type="number" id="target-time" min="1" max="120" value="30">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estadísticas - Colapsable -->
+                        <div class="collapsible-section statistics-section">
+                            <button class="section-header" type="button" data-target="statistics-content">
+                                <div class="section-title">
+                                    <span class="section-icon">📊</span>
+                                    <span>Estadísticas</span>
+                                </div>
+                                <span class="section-toggle">▶</span>
+                            </button>
+                            <!-- Estadísticas - Contenido -->
+                            <div class="section-content" id="statistics-content">
+                                <div class="section-content-inner">
+                                    <div class="stats-container">
+                                        <div class="stat-card">
+                                            <div class="stat-number" id="total-words-stat">0</div>
+                                            <div class="stat-label">Palabras Totales</div>
+                                        </div>
+                                        <div class="stat-card">
+                                            <div class="stat-number" id="progress-stat">0%</div>
+                                            <div class="stat-label">Progreso</div>
+                                        </div>
+                                        <div class="stat-card">
+                                            <div class="stat-number" id="sections-stat">0/4</div>
+                                            <div class="stat-label">Secciones</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Controles de estilo -->
                     <div class="style-controls">
-                        <h3>🎨 Personalización</h3>
-                        <div class="control-group">
-                            <label for="font-family">Fuente:</label>
-                            <select id="font-family">
-                                <option value="Arial, sans-serif">Arial</option>
-                                <option value="Times New Roman, serif">Times New Roman</option>
-                                <option value="Calibri, sans-serif">Calibri</option>
-                                <option value="Georgia, serif">Georgia</option>
-                                <option value="Verdana, sans-serif">Verdana</option>
-                                <option value="Trebuchet MS, sans-serif">Trebuchet MS</option>
-                            </select>
+                        <!-- Encabezado de personalización -->
+                        <div class="personalization-header">
+                            <h3>
+                                <span class="personalization-icon">🎨</span>
+                                Personalización
+                            </h3>
+                            <div class="live-preview-indicator">
+                                ⚡ Vista Previa en Vivo
+                            </div>
                         </div>
 
-                        <div class="control-group">
-                            <label for="font-size">Tamaño de fuente:</label>
-                            <select id="font-size">
-                                <option value="12px">Pequeño (12px)</option>
-                                <option value="14px">Normal (14px)</option>
-                                <option value="16px" selected>Mediano (16px)</option>
-                                <option value="18px">Grande (18px)</option>
-                                <option value="20px">Muy Grande (20px)</option>
-                            </select>
-                        </div>
+                        <div class="personalization-content">
+                            <!-- Grupo: Tipografía -->
+                            <div class="control-group">
+                                <div class="control-group-title">
+                                    <span class="control-group-icon">📝</span>
+                                    Tipografía
+                                </div>
+                                <div class="controls-grid two-column">
+                                    <div class="control-field">
+                                        <label class="control-label" for="font-family">Fuente</label>
+                                        <select id="font-family" class="style-select">
+                                            <option value="Arial, sans-serif">Arial</option>
+                                            <option value="Times New Roman, serif">Times New Roman</option>
+                                            <option value="Calibri, sans-serif">Calibri</option>
+                                            <option value="Georgia, serif">Georgia</option>
+                                            <option value="Verdana, sans-serif">Verdana</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-field">
+                                        <label class="control-label" for="font-size">Tamaño</label>
+                                        <select id="font-size" class="style-select">
+                                            <option value="12px">Pequeño (12px)</option>
+                                            <option value="14px">Normal (14px)</option>
+                                            <option value="16px" selected>Mediano (16px)</option>
+                                            <option value="18px">Grande (18px)</option>
+                                            <option value="20px">Muy Grande (20px)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="control-group">
-                            <label for="theme">Tema:</label>
-                            <select id="theme">
-                                <option value="light">Claro</option>
-                                <option value="dark">Oscuro</option>
-                                <option value="sepia">Sepia</option>
-                                <option value="blue">Azul</option>
-                                <option value="green">Verde</option>
-                            </select>
-                        </div>
+                            <!-- Grupo: Espaciado -->
+                            <div class="control-group">
+                                <div class="control-group-title">
+                                    <span class="control-group-icon">📐</span>
+                                    Espaciado
+                                </div>
+                                <div class="controls-grid single-column">
+                                    <div class="control-field">
+                                        <label class="control-label" for="line-height">Espaciado de líneas</label>
+                                        <select id="line-height" class="style-select">
+                                            <option value="1.2">Compacto (1.2)</option>
+                                            <option value="1.4">Normal (1.4)</option>
+                                            <option value="1.6" selected>Cómodo (1.6)</option>
+                                            <option value="1.8">Amplio (1.8)</option>
+                                            <option value="2.0">Muy Amplio (2.0)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="control-group">
-                            <label for="text-color">Color del texto:</label>
-                            <input type="color" id="text-color" value="#333333">
-                        </div>
+                            <!-- Grupo: Colores -->
+                            <div class="control-group">
+                                <div class="control-group-title">
+                                    <span class="control-group-icon">🎨</span>
+                                    Colores
+                                </div>
+                                <div class="controls-grid two-column">
+                                    <div class="control-field">
+                                        <label class="control-label" for="text-color">Color del texto</label>
+                                        <div class="color-input-wrapper">
+                                            <input type="color" id="text-color" class="style-color-input" value="#333333">
+                                            <div class="color-preview" id="text-color-preview"></div>
+                                        </div>
+                                    </div>
+                                    <div class="control-field">
+                                        <label class="control-label" for="background-color">Color de fondo</label>
+                                        <div class="color-input-wrapper">
+                                            <input type="color" id="background-color" class="style-color-input" value="#ffffff">
+                                            <div class="color-preview" id="background-color-preview"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="control-group">
-                            <label for="background-color">Color de fondo:</label>
-                            <input type="color" id="background-color" value="#ffffff">
-                        </div>
+                            <!-- Grupo: Temas -->
+                            <div class="control-group">
+                                <div class="control-group-title">
+                                    <span class="control-group-icon">🌈</span>
+                                    Temas Predefinidos
+                                </div>
+                                <div class="theme-selector">
+                                    <div class="theme-option active" data-theme="light">
+                                        <div class="theme-preview light"></div>
+                                        <div class="theme-name">Claro</div>
+                                    </div>
+                                    <div class="theme-option" data-theme="dark">
+                                        <div class="theme-preview dark"></div>
+                                        <div class="theme-name">Oscuro</div>
+                                    </div>
+                                    <div class="theme-option" data-theme="sepia">
+                                        <div class="theme-preview sepia"></div>
+                                        <div class="theme-name">Sepia</div>
+                                    </div>
+                                    <div class="theme-option" data-theme="blue">
+                                        <div class="theme-preview blue"></div>
+                                        <div class="theme-name">Azul</div>
+                                    </div>
+                                    <div class="theme-option" data-theme="green">
+                                        <div class="theme-preview green"></div>
+                                        <div class="theme-name">Verde</div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="theme" value="light">
+                            </div>
 
-                        <div class="control-group">
-                            <label for="line-height">Espaciado de líneas:</label>
-                            <select id="line-height">
-                                <option value="1.2">Compacto (1.2)</option>
-                                <option value="1.4">Normal (1.4)</option>
-                                <option value="1.6" selected>Cómodo (1.6)</option>
-                                <option value="1.8">Amplio (1.8)</option>
-                                <option value="2.0">Muy Amplio (2.0)</option>
-                            </select>
+                            <!-- Controles de acción -->
+                            <div class="action-controls">
+                                <button type="button" id="reset-styles-btn" class="reset-styles-btn">
+                                    🔄 Restablecer
+                                </button>
+                                <button type="button" id="apply-styles-btn" class="apply-styles-btn">
+                                    ✨ Aplicar Cambios
+                                </button>
+                            </div>
                         </div>
                     </div>
 
+                    <!-- Formulario mejorado -->
                     <form id="sermon-form">
-                        <div class="form-group">
-                            <label for="sermon-theme">Tema:</label>
-                            <input type="text" id="sermon-theme" placeholder="Ej: El amor de Dios" required>
+                        <!-- Progress bar del formulario -->
+                        <div class="form-progress">
+                            <div class="form-progress-bar" id="form-progress-bar"></div>
+                        </div>
+
+                        <div class="form-group theme-group">
+                            <label for="sermon-theme">
+                                Tema de la Predicación
+                                <span class="tooltip" data-tooltip="El tema central que abordará tu predicación">?</span>
+                            </label>
+                            <input type="text" id="sermon-theme" placeholder="Ej: El amor incondicional de Dios" required>
                             <span class="word-count" id="theme-count">0 palabras</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="sermon-text">Texto Bíblico:</label>
-                            <input type="text" id="sermon-text" placeholder="Ej: Juan 3:16" required>
+                        <div class="form-group text-group">
+                            <label for="sermon-text">
+                                Texto Bíblico Principal
+                                <span class="tooltip" data-tooltip="El pasaje bíblico base para tu predicación">?</span>
+                            </label>
+                            <input type="text" id="sermon-text" placeholder="Ej: Juan 3:16, 1 Corintios 13:4-7" required>
                             <span class="word-count" id="text-count">0 palabras</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="sermon-title">Título:</label>
-                            <input type="text" id="sermon-title" placeholder="Ej: El amor incondicional de Dios" required>
+                        <div class="form-group title-group">
+                            <label for="sermon-title">
+                                Título de la Predicación
+                                <span class="tooltip" data-tooltip="Un título atractivo que capture la esencia de tu mensaje">?</span>
+                            </label>
+                            <input type="text" id="sermon-title" placeholder="Ej: 'Amados sin condiciones: El corazón de Dios revelado'" required>
                             <span class="word-count" id="title-count">0 palabras</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="sermon-purpose">Propósito:</label>
-                            <textarea id="sermon-purpose" placeholder="Ej: Mostrar el amor incondicional de Dios hacia la humanidad" required></textarea>
+                        <div class="form-group purpose-group">
+                            <label for="sermon-purpose">
+                                Propósito de la Predicación
+                                <span class="tooltip" data-tooltip="El objetivo específico que quieres lograr con tu mensaje">?</span>
+                            </label>
+                            <textarea id="sermon-purpose" class="autosize" placeholder="Ej: Ayudar a la congregación a comprender la profundidad del amor de Dios y cómo este amor puede transformar sus vidas diarias..." required></textarea>
                             <span class="word-count" id="purpose-count">0 palabras</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="sermon-intro">Introducción:</label>
-                            <textarea id="sermon-intro" placeholder="Escribe la introducción de tu predicación..." required></textarea>
+                        <div class="form-group intro-group">
+                            <label for="sermon-intro">
+                                Introducción
+                                <span class="tooltip" data-tooltip="Un gancho inicial que capture la atención y prepare el corazón">?</span>
+                            </label>
+                            <textarea id="sermon-intro" class="autosize" placeholder="Comienza con una historia, pregunta reflexiva, o estadística que conecte con tu audiencia..." required></textarea>
                             <span class="word-count" id="intro-count">0 palabras</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="sermon-body">Cuerpo de la Predicación:</label>
-                            <textarea id="sermon-body" placeholder="Desarrolla los puntos principales de tu predicación..." required></textarea>
+                        <div class="form-group body-group">
+                            <label for="sermon-body">
+                                Cuerpo de la Predicación
+                                <span class="tooltip" data-tooltip="Los puntos principales desarrollados con ejemplos y aplicaciones">?</span>
+                            </label>
+                            <textarea id="sermon-body" class="autosize" placeholder="Desarrolla los puntos principales de tu predicación con ejemplos, ilustraciones y aplicaciones prácticas..." required></textarea>
                             <span class="word-count" id="body-count">0 palabras</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="sermon-conclusion">Conclusión:</label>
-                            <textarea id="sermon-conclusion" placeholder="Escribe la conclusión de tu predicación..." required></textarea>
+                        <div class="form-group conclusion-group">
+                            <label for="sermon-conclusion">
+                                Conclusión
+                                <span class="tooltip" data-tooltip="Un cierre poderoso que motive a la acción y compromiso">?</span>
+                            </label>
+                            <textarea id="sermon-conclusion" class="autosize" placeholder="Concluye con un llamado claro a la acción, oración, o compromiso personal..." required></textarea>
                             <span class="word-count" id="conclusion-count">0 palabras</span>
                         </div>
 
                         <div class="form-actions">
                             <button type="button" id="preview-btn">👁️ Vista Previa</button>
-                            <button type="button" id="generate-pdf-btn" title="Generar PDF (Ctrl+P)">📄 Generar PDF</button>
                             <button type="button" id="reset-styles-btn">🔄 Restablecer Estilos</button>
                         </div>
                     </form>
@@ -342,7 +535,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2023 Predica PRO - Creador de Predicaciones Cristianas</p>
+        <p>&copy; 2025 Predica PRO - Creador de Predicaciones Cristianas</p>
     </footer>
 
     <script src="script.js"></script>
